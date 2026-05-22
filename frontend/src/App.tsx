@@ -1,34 +1,29 @@
-import { Container, Title, Text, Paper, Code } from '@mantine/core'
-import { InlineCodeHighlight, CodeHighlight } from '@mantine/code-highlight'
-
-const sampleCode = `function fibonacci(n: number): number {
-  if (n <= 1) return n
-  return fibonacci(n - 1) + fibonacci(n - 2)
-}
-
-console.log(fibonacci(10)) // 55`
+import { AppShell, Group, Title, NavLink } from '@mantine/core'
+import { Outlet, NavLink as RRNavLink } from 'react-router-dom'
 
 function App() {
   return (
-    <Container size="sm" py="xl">
-      <Title order={1} mb="md">Hello, world!</Title>
+    <AppShell
+      header={{ height: 56 }}
+      navbar={{ width: 220, breakpoint: 0 }}
+      padding={0}
+    >
+      <AppShell.Header>
+        <Group h="100%" px="md">
+          <Title order={3}>Calendar Booking</Title>
+        </Group>
+      </AppShell.Header>
 
-      <Text mb="lg">
-        This is a simple app powered by{' '}
-        <InlineCodeHighlight code="React + TypeScript + Vite" />,
-        styled with <InlineCodeHighlight code="Mantine" />,
-        and syntax-highlighted with <InlineCodeHighlight code="Prism" />.
-      </Text>
+      <AppShell.Navbar p="xs">
+        <NavLink component={RRNavLink} to="/" label="Home" />
+        <NavLink component={RRNavLink} to="/guest" label="Guest" />
+        <NavLink component={RRNavLink} to="/owner" label="Owner" />
+      </AppShell.Navbar>
 
-      <Paper shadow="sm" p="md" withBorder>
-        <Title order={3} mb="sm">Code example</Title>
-        <CodeHighlight code={sampleCode} language="ts" />
-      </Paper>
-
-      <Text ta="center" mt="xl" c="dimmed" size="sm">
-        Edit <Code>src/App.tsx</Code> to get started
-      </Text>
-    </Container>
+      <AppShell.Main>
+        <Outlet />
+      </AppShell.Main>
+    </AppShell>
   )
 }
 
