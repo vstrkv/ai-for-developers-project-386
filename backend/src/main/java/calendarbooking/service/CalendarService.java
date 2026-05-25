@@ -61,9 +61,11 @@ public class CalendarService {
                 LocalDateTime slotStart = LocalDateTime.of(date, time);
                 LocalDateTime slotEnd = slotStart.plusMinutes(eventType.getDurationMinutes());
 
+                Instant slotStartInstant = slotStart.toInstant(ZoneOffset.UTC);
+                Instant slotEndInstant = slotEnd.toInstant(ZoneOffset.UTC);
                 boolean isBooked = bookings.values().stream().anyMatch(b ->
-                    b.getEventTypeId().equals(eventTypeId)
-                    && b.getStartTime().equals(slotStart.toInstant(ZoneOffset.UTC))
+                    slotStartInstant.isBefore(b.getEndTime())
+                    && slotEndInstant.isAfter(b.getStartTime())
                 );
 
                 if (!isBooked) {
@@ -93,6 +95,14 @@ public class CalendarService {
 
         Instant start = Instant.parse(request.getStartTime());
         Instant end = start.plusSeconds(eventType.getDurationMinutes() * 60L);
+
+        boolean alreadyBooked = bookings.values().stream().anyMatch(b ->
+            start.isBefore(b.getEndTime())
+            && end.isAfter(b.getStartTime())
+        );
+        if (alreadyBooked) {
+            throw new IllegalArgumentException("This time slot is already booked");
+        }
 
         Booking booking = new Booking();
         booking.setId(UUID.randomUUID().toString());

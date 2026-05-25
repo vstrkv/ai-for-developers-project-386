@@ -71,6 +71,9 @@ function GuestPage() {
     try {
       const b = await api.guestCreateBooking(form)
       setBookings(p => [...p, b]); close()
+      setForm({ eventTypeId: form.eventTypeId, guestName: '', guestEmail: '', startTime: '' })
+      const updatedSlots = await api.guestListSlots(form.eventTypeId)
+      setSlots(updatedSlots)
     } catch (e: any) { setError(e.message) }
     finally { setLoading(p => ({ ...p, book: false })) }
   }
